@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Environmental Data Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Environmental Data Dashboard</h1>
+
+    <canvas id="air-quality-chart"></canvas>
+    <canvas id="water-pollution-chart"></canvas>
+    <canvas id="deforestation-rates-chart"></canvas>
+    <canvas id="climate-patterns-chart"></canvas>
+
+    <script>
+        async function fetchData(url) {
+            const response = await fetch(url);
+            const data = await response.json();
+            return data;
+        }
+
+        async function renderChart(chartId, dataUrl, label) {
+            const data = await fetchData(dataUrl);
+
+            const ctx = document.getElementById(chartId).getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(item => item.date),
+                    datasets: [{
+                        label: label,
+                        data: data.map(item => item.value),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {}
+            });
+        }
+
+        renderChart('air-quality-chart', '/api/air_quality', 'Air Quality');
+        renderChart('water-pollution-chart', '/api/water_pollution', 'Water Pollution');
+        renderChart('deforestation-rates-chart', '/api/deforestation_rates', 'Deforestation Rates');
+        renderChart('climate-patterns-chart', '/api/climate_patterns', 'Climate Patterns');
+    </script>
+</body>
+</html>
